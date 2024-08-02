@@ -1,12 +1,21 @@
 package com.example.mk;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,8 +30,12 @@ import com.example.mk.ui.home.HomeFragment;
 import com.example.mk.ui.lib.LibFragment;
 import com.example.mk.ui.saves.SavesFragment;
 import com.example.mk.ui.settings.SettingsFragment;
+import com.google.gson.Gson;
 
 public class MainActivity extends AppCompatActivity {
+    private User user;
+    private boolean status = false;
+    private static final int REQUEST_CODE_REGISTER = 1;
     HomeFragment homeFragment = new HomeFragment();
     AccountFragment accountFragment = new AccountFragment();
     LibFragment libFragment = new LibFragment();
@@ -34,9 +47,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Пример начальной загрузки фрагмента
-        if (savedInstanceState == null) {
 
+        checkLoginStatus();
+
+        initializeFragmentAndNavigation(savedInstanceState);
+    }
+
+    private final ActivityResultLauncher<Intent> registrationActivityResultLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    user = result.getData().getParcelableExtra("account_data");
+                }
+            });
+
+    protected void initializeFragmentAndNavigation(Bundle savedInstanceState) {
+        //Подключение фрагментов к нижней панели
+        // Первоначальная загрузка фрагмента
+        if (savedInstanceState == null) {
             loadFragment(homeFragment);
         }
         LinearLayout tabBarSaves = findViewById(R.id.tab_bar_saves);
@@ -76,6 +103,28 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void checkLoginStatus() {
+        SharedPreferences preferences = getSharedPreferences("account_data", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = preferences.getString("user_data", null); // Чтение JSON из SharedPreferences
+        if (json != null) {
+            user = gson.fromJson(json, User.class); // Десериализация JSON в объект
+            status=true;
+        }
+        if (status == false) {
+            Intent intent = new Intent(this, RegistrationActivity.class);
+            startActivity(intent);
+            registrationActivityResultLauncher.launch(intent);
+
+        }
+        if (status == true) {
+            Intent intentA = new Intent(MainActivity.this, AccountFragment.class);
+            intentA.putExtra(User.class.getSimpleName(), user);
+        }
+    }
+
+
+
     // Метод для замены фрагментов
     private void loadFragment(Fragment fragment) {
         // Создание транзакции
@@ -96,7 +145,9 @@ public class MainActivity extends AppCompatActivity {
         loadFragment(homeFragment);
     }
 
-    public void switchToFragmentAccount() {loadFragment(accountFragment);}
+    public void switchToFragmentAccount() {
+        loadFragment(accountFragment);
+    }
 
     public void switchToFragmentLib() {
         loadFragment(libFragment);

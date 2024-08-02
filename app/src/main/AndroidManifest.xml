@@ -12,6 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Mk"
         tools:targetApi="31">
+        <activity android:name=".RegistrationActivity"/>
+        <activity android:name=".AdminActivity"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
