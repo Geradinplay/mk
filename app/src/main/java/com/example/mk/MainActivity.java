@@ -46,11 +46,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        initializeFragmentAndNavigation(savedInstanceState);
 
         checkLoginStatus();
 
-        initializeFragmentAndNavigation(savedInstanceState);
+
     }
 
     private final ActivityResultLauncher<Intent> registrationActivityResultLauncher =
@@ -59,6 +59,24 @@ public class MainActivity extends AppCompatActivity {
                     user = result.getData().getParcelableExtra("account_data");
                 }
             });
+
+    private void checkLoginStatus() {
+        SharedPreferences preferences = getSharedPreferences("account_data", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = preferences.getString("user_data", null); // Чтение JSON из SharedPreferences
+        if (json != null) {
+            user = gson.fromJson(json, User.class); // Десериализация JSON в объект
+            status=true;
+        }
+        if (status == false) {
+            Intent intent = new Intent(this, RegistrationActivity.class);
+            registrationActivityResultLauncher.launch(intent);
+        }
+        if (status == true) {
+            Intent intentA = new Intent(MainActivity.this, AccountFragment.class);
+            intentA.putExtra(User.class.getSimpleName(), user);
+        }
+    }
 
     protected void initializeFragmentAndNavigation(Bundle savedInstanceState) {
         //Подключение фрагментов к нижней панели
@@ -102,28 +120,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void checkLoginStatus() {
-        SharedPreferences preferences = getSharedPreferences("account_data", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = preferences.getString("user_data", null); // Чтение JSON из SharedPreferences
-        if (json != null) {
-            user = gson.fromJson(json, User.class); // Десериализация JSON в объект
-            status=true;
-        }
-        if (status == false) {
-            Intent intent = new Intent(this, RegistrationActivity.class);
-            startActivity(intent);
-            registrationActivityResultLauncher.launch(intent);
-
-        }
-        if (status == true) {
-            Intent intentA = new Intent(MainActivity.this, AccountFragment.class);
-            intentA.putExtra(User.class.getSimpleName(), user);
-        }
-    }
-
-
 
     // Метод для замены фрагментов
     private void loadFragment(Fragment fragment) {

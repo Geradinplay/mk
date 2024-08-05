@@ -44,38 +44,38 @@ public class LibFragment extends Fragment {
     }
 
     protected void fetchData(String serverUrl){
-        try {
-            RetrofitClient retrofitClient = new RetrofitClient();
-            retrofitClient.getClient(serverUrl);
-            ServerApi messagesApi = retrofitClient.getRetrofit().create(ServerApi.class);
-            Call<AnimeItem> messages = messagesApi.getAnimeItems();
-            messages.enqueue(new Callback<AnimeItem>(){
-                @Override
-                public void onResponse(Call<AnimeItem> call, Response<AnimeItem> response) {
-
-                    }
-                @Override
-                public void onFailure(Call<AnimeItem> call, Throwable t) {
-                    final Dialog dialogFragment = new Dialog(getContext()); // Объявляем dialogFragment как final
-                    dialogFragment.setContentView(R.layout.fragment_dialog);
-                    dialogFragment.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialogFragment.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    dialogFragment.getWindow().setGravity(Gravity.CENTER);
-
-                    TextView reloadButton = dialogFragment.findViewById(R.id.reload_button); // Находим кнопку внутри диалога
-                    reloadButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            fetchData(serverUrl);
-                            dialogFragment.dismiss(); // Закрываем диалог, используя dialogFragment
-                        }
-                    });
-
-                    dialogFragment.show(); // Отображаем диалог
-                }
-            });
-        } catch (IllegalArgumentException e) {
-          Toast.makeText(getActivity(), "В настоящее время сервер недоступен!", Toast.LENGTH_SHORT).show();
-        }
+//        try {
+//            RetrofitClient retrofitClient = new RetrofitClient();
+//            retrofitClient.getClient(serverUrl);
+//            ServerApi messagesApi = retrofitClient.getRetrofit().create(ServerApi.class);
+//            Call<AnimeItem> messages = messagesApi.getAnimeItems();
+//            messages.enqueue(new Callback<AnimeItem>(){
+//                @Override
+//                public void onResponse(Call<AnimeItem> call, Response<AnimeItem> response) {
+//
+//                    }
+//                @Override
+//                public void onFailure(Call<AnimeItem> call, Throwable t) {
+//                    final Dialog dialogFragment = new Dialog(getContext()); // Объявляем dialogFragment как final
+//                    dialogFragment.setContentView(R.layout.fragment_dialog);
+//                    dialogFragment.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                    dialogFragment.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    dialogFragment.getWindow().setGravity(Gravity.CENTER);
+//
+//                    TextView reloadButton = dialogFragment.findViewById(R.id.reload_button); // Находим кнопку внутри диалога
+//                    reloadButton.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            fetchData(serverUrl);
+//                            dialogFragment.dismiss(); // Закрываем диалог, используя dialogFragment
+//                        }
+//                    });
+//
+//                    dialogFragment.show(); // Отображаем диалог
+//                }
+//            });
+//        } catch (IllegalArgumentException e) {
+//          Toast.makeText(getActivity(), "В настоящее время сервер недоступен!", Toast.LENGTH_SHORT).show();
+//        }
     }
 }
