@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <!--  Фон  -->
     <!-- TextView - элемент, который отображает текст -->
     <TextView
         android:textColor="@color/black"

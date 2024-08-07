@@ -10,4 +10,5 @@ import retrofit2.http.POST;
 public interface ServerApi {
     @POST("/user")
     Call<ErrorDTO> sendData(@Body User user);
+
 }

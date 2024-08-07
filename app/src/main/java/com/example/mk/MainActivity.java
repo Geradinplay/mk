@@ -46,36 +46,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Инициализирует меню для переключения фрагметов, размешенная внизу экрана
         initializeFragmentAndNavigation(savedInstanceState);
-
-        checkLoginStatus();
-
-
-    }
-
-    private final ActivityResultLauncher<Intent> registrationActivityResultLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                    user = result.getData().getParcelableExtra("account_data");
-                }
-            });
-
-    private void checkLoginStatus() {
-        SharedPreferences preferences = getSharedPreferences("account_data", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = preferences.getString("user_data", null); // Чтение JSON из SharedPreferences
-        if (json != null) {
-            user = gson.fromJson(json, User.class); // Десериализация JSON в объект
-            status=true;
-        }
-        if (status == false) {
-            Intent intent = new Intent(this, RegistrationActivity.class);
-            registrationActivityResultLauncher.launch(intent);
-        }
-        if (status == true) {
-            Intent intentA = new Intent(MainActivity.this, AccountFragment.class);
-            intentA.putExtra(User.class.getSimpleName(), user);
-        }
     }
 
     protected void initializeFragmentAndNavigation(Bundle savedInstanceState) {

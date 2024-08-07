@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.mk.AnimeItem;
 import com.example.mk.R;
 import com.example.mk.RetrofitClient;
 import com.example.mk.ServerApi;
